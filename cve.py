@@ -6,7 +6,7 @@ import os
 app = Flask(__name__)
 
 # Configuration de la clé API d'OpenAI
-openai.api_key = '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'
+openai.api_key = 'YOUR API KEY'
 
 # Chargement des données CVE à partir des fichiers CSV
 csv_folder = '/Users/cedric/cve-finder/cve_list'
