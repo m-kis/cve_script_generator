@@ -9,7 +9,7 @@ app = Flask(__name__)
 openai.api_key = 'YOUR API KEY'
 
 # Chargement des données CVE à partir des fichiers CSV
-csv_folder = '/Users/cedric/cve-finder/cve_list'
+csv_folder = 'cve-finder/cve_list'
 all_files = []
 
 # Chargement des données à partir de tous les fichiers CSV dans le dossier
