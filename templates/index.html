@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>   
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.7.2/styles/default.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/highlight.js@10.7.2/highlight.min.js"></script>
+
+    <meta charset="UTF-8">
+    <title>CVE Search</title>
+    <style>
+        body {
+            font-family: Montserrat, sans-serif;
+            background-color: #F5F5F5;
+            color: #08376B;
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            width: 300px;
+        }
+
+        input[type="submit"] {
+            padding: 10px 20px;
+            background-color: #35C0ED;
+            color: #FFFFFF;
+            border: none;
+            cursor: pointer;
+        }
+
+        .error {
+            color: red;
+            margin-top: 10px;
+        }
+
+        .continue-btn {
+            padding: 10px 20px;
+            background-color: #35C0ED;
+            color: #FFFFFF;
+            border: none;
+            cursor: pointer;
+        }
+        
+    </style>
+</head>
+<body>
+    <h1>M-KIS tools for CVE Search and Script Generator</h1>
+    <form method="post" action="/search">
+        <input type="text" name="cve_id" placeholder="CVE ID" required>
+        <input type="submit" value="Search">
+    </form>
+
+    {% if cve_id %}
+        <h2>CVE: {{ cve_id }}</h2>
+        {% if summary %}
+            <p>{{ summary }}</p>
+        {% endif %}
+        {% if exploitation_info %}
+            <p>{{ exploitation_info }}</p>
+        {% endif %}
+    {% endif %}
+
+    {% if exploit_script %}
+    <div id="script-container">
+        <code>
+            <div id="script-container">
+                <pre class="code-block">
+                    {% if previous_script %}
+                        {{ previous_script | safe }}<br>
+                    {% endif %}
+                    {% for line in exploit_script %}
+                        {{ line | safe }}<br>
+                    {% endfor %}
+                </pre>
+            </div>
+            {% if previous_lines %}
+            <div id="previous-script-container">
+                <pre>
+                    {% for line in previous_lines %}
+                        {{ line }}<br>
+                    {% endfor %}
+                </pre>
+            </div>
+        {% endif %}        
+    </code>
+    </div>
+    <form method="post" action="/continue_script_generation">
+        <input type="hidden" name="cve_id" value="{{ cve_id }}">
+        <input type="hidden" name="previous_script" value="{% if previous_script %}{{ previous_script }}{% endif %}{{ exploit_script }}">
+        <input type="submit" value="Continue Generation" class="continue-btn">
+    </form>
+    <form method="post" action="/regenerate_script">
+        <input type="hidden" name="cve_id" value="{{ cve_id }}">
+        <input type="hidden" name="previous_script" value="{{ previous_script }}">
+        <input type="submit" value="Regenerate Script" class="continue-btn">
+    </form>
+{% endif %}
+
+
+    {% if error_message %}
+        <p class="error">{{ error_message }}</p>
+    {% endif %}
+
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            document.querySelectorAll('pre.code-block').forEach((block) => {
+                hljs.highlightBlock(block);
+            });
+        });
+    </script>
+    
+</body>
+</html>
